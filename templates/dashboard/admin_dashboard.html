@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - CRL{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-cog me-2"></i>Admin Panel</h5>
+                </div>
+                <div class="card-body">
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{% url 'register' %}">
+                            <i class="fas fa-user-plus me-2"></i>Register New User
+                        </a>
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-tools me-2"></i>Django Admin
+                        </a>
+                        <a class="nav-link" href="/admin/accounts/profile/">
+                            <i class="fas fa-users me-2"></i>Manage Users
+                        </a>
+                        <a class="nav-link" href="/admin/providers/provider/">
+                            <i class="fas fa-building me-2"></i>Manage Providers
+                        </a>
+                        <a class="nav-link" href="{% url 'add_provider' %}">
+                            <i class="fas fa-plus me-2"></i>Add New Provider
+                        </a>
+                        <a class="nav-link" href="/admin/services/service/">
+                            <i class="fas fa-concierge-bell me-2"></i>Manage Services
+                        </a>
+                        <a class="nav-link" href="{% url 'add_service' %}">
+                            <i class="fas fa-plus me-2"></i>Add New Service
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center border-primary">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ total_users }}</h3>
+                            <p class="mb-0">Total Users</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-success">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ total_providers }}</h3>
+                            <p class="mb-0">Providers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-info">
+                        <div class="card-body">
+                            <h3 class="text-info">{{ total_services }}</h3>
+                            <p class="mb-0">Services</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center border-warning">
+                        <div class="card-body">
+                            <h3 class="text-warning">{{ total_bookings }}</h3>
+                            <p class="mb-0">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Actions -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card border-warning">
+                        <div class="card-header bg-warning text-white">
+                            <h5><i class="fas fa-clock me-2"></i>Pending Bookings</h5>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="text-warning">{{ pending_bookings }}</h2>
+                            <p class="mb-0">Bookings awaiting approval</p>
+                            <a href="/admin/requests/booking/" class="btn btn-warning mt-2">Review Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-info">
+                        <div class="card-header bg-info text-white">
+                            <h5><i class="fas fa-bell me-2"></i>System Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Server: Online</p>
+                            <p class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Database: Connected</p>
+                            <p class="mb-0"><i class="fas fa-check-circle text-success me-2"></i>Services: Running</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar-check me-2"></i>Recent Bookings</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Service</th>
+                                        <th>Provider</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                        <tr>
+                                            <td>{{ booking.user.get_full_name|default:booking.user.username }}</td>
+                                            <td>{{ booking.service.name }}</td>
+                                            <td>{{ booking.provider.name }}</td>
+                                            <td>{{ booking.booking_date|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if booking.status == 'pending' %}warning{% elif booking.status == 'confirmed' %}info{% elif booking.status == 'completed' %}success{% else %}secondary{% endif %}">
+                                                    {{ booking.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>${{ booking.total_amount }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bookings yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Admin Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="/admin/accounts/profile/add/" class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-user-plus me-2"></i>Add User
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/providers/provider/add/" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-building me-2"></i>Add Provider
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/services/service/add/" class="btn btn-info w-100 mb-2">
+                                <i class="fas fa-concierge-bell me-2"></i>Add Service
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/admin/" class="btn btn-secondary w-100 mb-2">
+                                <i class="fas fa-cog me-2"></i>Full Admin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

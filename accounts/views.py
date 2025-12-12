@@ -5,13 +5,17 @@ from django.contrib import messages
 from .forms import UserRegistrationForm
 
 def register(request):
+    # Only allow staff/admin users to register new accounts
+    if not request.user.is_authenticated or not request.user.is_staff:
+        messages.error(request, 'Access denied. Only administrators can register new users.')
+        return redirect('home')
+    
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            messages.success(request, 'Registration successful!')
-            return redirect('home')
+            messages.success(request, f'User {user.username} registered successfully!')
+            return redirect('admin_dashboard')  # Redirect to admin dashboard after successful registration
     else:
         form = UserRegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})

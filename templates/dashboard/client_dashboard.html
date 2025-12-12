@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Dashboard - CRL{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user me-2"></i>{{ user.get_full_name|default:user.username }}</h5>
+                </div>
+                <div class="card-body">
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="{% url 'client_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a class="nav-link" href="{% url 'client_profile' %}">
+                            <i class="fas fa-user-edit me-2"></i>Profile
+                        </a>
+                        <a class="nav-link" href="#notifications" data-bs-toggle="modal">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                            {% if unread_count > 0 %}
+                                <span class="badge bg-danger">{{ unread_count }}</span>
+                            {% endif %}
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ total_bookings }}</h3>
+                            <p class="mb-0">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-warning">{{ pending_bookings }}</h3>
+                            <p class="mb-0">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ completed_bookings }}</h3>
+                            <p class="mb-0">Completed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar-check me-2"></i>Recent Bookings</h5>
+                </div>
+                <div class="card-body">
+                    {% if bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Provider</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in bookings %}
+                                        <tr>
+                                            <td>{{ booking.service.name }}</td>
+                                            <td>{{ booking.provider.name }}</td>
+                                            <td>{{ booking.booking_date|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if booking.status == 'pending' %}warning{% elif booking.status == 'confirmed' %}info{% elif booking.status == 'completed' %}success{% else %}secondary{% endif %}">
+                                                    {{ booking.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>${{ booking.total_amount }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bookings yet. <a href="/services/">Browse services</a> to make your first booking.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="#available-services" class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-search me-2"></i>Find Services
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#available-providers" class="btn btn-success w-100 mb-2">
+                                <i class="fas fa-users me-2"></i>Browse Providers
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'client_profile' %}" class="btn btn-info w-100 mb-2">
+                                <i class="fas fa-user-edit me-2"></i>Update Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Services -->
+            <div id="available-services" class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-concierge-bell me-2"></i>Available Services</h5>
+                    <a href="/services/" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if available_services %}
+                        <div class="row">
+                            {% for service in available_services %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ service.name }}</h6>
+                                            <p class="card-text">{{ service.description|truncatechars:100 }}</p>
+                                            <p class="card-text">
+                                                <strong>Provider:</strong> {{ service.provider.name }}<br>
+                                                <strong>Price:</strong> <span class="text-success fw-bold">${{ service.price }}</span>
+                                            </p>
+                                            <a href="/services/{{ service.id }}/book/" class="btn btn-primary btn-sm">Book Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No services available at the moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Available Providers -->
+            <div id="available-providers" class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-building me-2"></i>Available Providers</h5>
+                    <a href="/providers/" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if available_providers %}
+                        <div class="row">
+                            {% for provider in available_providers %}
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ provider.name }}</h6>
+                                            <p class="card-text">
+                                                {% if provider.email %}<strong>Email:</strong> {{ provider.email }}<br>{% endif %}
+                                                {% if provider.phone %}<strong>Phone:</strong> {{ provider.phone }}<br>{% endif %}
+                                                {% if provider.address %}<strong>Address:</strong> {{ provider.address }}{% endif %}
+                                            </p>
+                                            <a href="/providers/" class="btn btn-success btn-sm">View Services</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No providers available at the moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal fade" id="notifications" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% if recent_notifications %}
+                    {% for notification in recent_notifications %}
+                        <div class="notification-item p-3 border-bottom {% if not notification.is_read %}bg-light{% endif %}">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6>{{ notification.title }}</h6>
+                                    <p class="mb-1">{{ notification.message }}</p>
+                                    <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                                </div>
+                                {% if not notification.is_read %}
+                                    <a href="{% url 'mark_notification_read' notification.id %}" class="btn btn-sm btn-outline-primary">Mark Read</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No notifications yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

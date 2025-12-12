@@ -10,6 +10,11 @@ def provider_list(request):
 
 @login_required
 def add_provider(request):
+    # Only allow staff/admin users to add providers
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied. Only administrators can add providers.')
+        return redirect('provider_list')
+    
     if request.method == 'POST':
         form = ProviderForm(request.POST)
         if form.is_valid():
