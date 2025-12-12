@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Providers - CRL Project{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Providers</h1>
+                <a href="{% url 'add_provider' %}" class="btn btn-custom">Add New Provider</a>
+            </div>
+            {% if providers %}
+                <div class="row">
+                    {% for provider in providers %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ provider.name }}</h5>
+                                    <p class="card-text">
+                                        <strong>Email:</strong> {{ provider.email }}<br>
+                                        {% if provider.phone %}<strong>Phone:</strong> {{ provider.phone }}<br>{% endif %}
+                                        {% if provider.address %}<strong>Address:</strong> {{ provider.address }}{% endif %}
+                                    </p>
+                                    <small class="text-muted">Created: {{ provider.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <h4>No providers yet.</h4>
+                    <p>Start by adding some providers through the admin panel or the form below.</p>
+                    <a href="{% url 'add_provider' %}" class="btn btn-primary">Add Provider</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

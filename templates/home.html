@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - CRL Project{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-5 text-center">
+            <h1 class="display-4 mb-4">Welcome to the CRL Project!</h1>
+            <p class="lead mb-4">This is a Django application for managing accounts, providers, requests, and services.</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="/providers/" class="btn btn-custom btn-lg w-100 mb-3">View Providers</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="/services/" class="btn btn-custom btn-lg w-100 mb-3">View Services</a>
+                </div>
+            </div>
+            {% if not user.is_authenticated %}
+            <div class="mt-4">
+                <a href="/accounts/register/" class="btn btn-success me-2">Register</a>
+                <a href="/accounts/login/" class="btn btn-primary">Login</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
