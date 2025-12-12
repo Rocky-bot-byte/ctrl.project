@@ -1,16 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - CRL Project{% endblock %}
+{% block title %}CRL - Connect, Request, Locate{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card p-5 text-center">
-            <h1 class="display-4 mb-4">Welcome to the CRL Project!</h1>
-            <p class="lead mb-4">This is a Django application for managing accounts, providers, requests, and services.</p>
+    <div class="col-md-10">
+        <div class="card p-5 text-center mb-5">
+            <h1 class="display-4 mb-4">CRL - Connect, Request, Locate</h1>
+            <p class="lead mb-4">A platform that connects users to verified local service providers: water suppliers, electricians, plumbers, hospitals, schools, and more.</p>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h5>Verified Providers</h5>
+                            <p>Connect with trusted local service providers in your area.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-tools fa-3x text-success mb-3"></i>
+                            <h5>Multiple Services</h5>
+                            <p>Find electricians, plumbers, hospitals, schools, and more.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                            <h5>Trusted & Secure</h5>
+                            <p>All providers are verified for quality and reliability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
-                    <a href="/providers/" class="btn btn-custom btn-lg w-100 mb-3">View Providers</a>
+                    <a href="/providers/" class="btn btn-custom btn-lg w-100 mb-3">Browse Providers</a>
                 </div>
                 <div class="col-md-6">
                     <a href="/services/" class="btn btn-custom btn-lg w-100 mb-3">View Services</a>
@@ -18,10 +47,110 @@
             </div>
             {% if not user.is_authenticated %}
             <div class="mt-4">
-                <a href="/accounts/register/" class="btn btn-success me-2">Register</a>
-                <a href="/accounts/login/" class="btn btn-primary">Login</a>
+                <a href="/accounts/register/" class="btn btn-success me-2">Join Now</a>
+                <a href="/accounts/login/" class="btn btn-primary">Sign In</a>
             </div>
             {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Services Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">What You Can Find on CRL</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-hospital me-2"></i>Healthcare Services
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Hospitals & Clinics</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Medical Practitioners</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Emergency Services</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Pharmacies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <i class="fas fa-wrench me-2"></i>Home & Maintenance
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Electricians</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Plumbers</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Carpenters</li>
+                            <li><i class="fas fa-check text-success me-2"></i>General Contractors</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <i class="fas fa-school me-2"></i>Educational Services
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Schools & Universities</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Tutoring Centers</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Training Institutes</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Educational Consultants</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-danger text-white">
+                        <i class="fas fa-shield-alt me-2"></i>Emergency Services
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Police Stations</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Fire Departments</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Ambulance Services</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Security Companies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-white">
+                        <i class="fas fa-home me-2"></i>Utility Services
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Water Suppliers</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Electricity Providers</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Gas Companies</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Internet/Cable Providers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <i class="fas fa-shopping-cart me-2"></i>Other Essentials
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Grocery Stores</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Pharmacies</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Banks & ATMs</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Post Offices</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Government Offices</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
